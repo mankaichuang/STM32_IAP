@@ -30,7 +30,7 @@ int main(void)
 	USART2_Init(115200);
 	
 	printf("**********************************\r\n");
-	printf("****this is IAP test!****\r\n");
+	printf("****this is boot test!****\r\n");
 	printf("**********************************\r\n");
 	while(1)
 	{
@@ -40,16 +40,13 @@ int main(void)
 		Delay_ms(500);
 		if(USART_RX_STA & 0x8000)
 		{
-//			printf("%s\r\n",USART_RX_BUF);
 			USART_RXbuffer_init();
 			printf("**********************************\r\n");
 			printf("****jump to APP test!****\r\n");
 			printf("**********************************\r\n");
 			if (((*(__IO uint32_t*)APPLICATION_ADDRESS) & 0x2FFE0000 ) == 0x20000000)
 			{
-				printf("test\r\n");
-			  /* Jump to user application */
-			  JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
+			  JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4); //APP address
 			  JumpToApplication = (pFunction) JumpAddress;
 			  /* Initialize user application's Stack Pointer */
 			  __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);

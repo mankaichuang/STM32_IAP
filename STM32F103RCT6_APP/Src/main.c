@@ -40,18 +40,15 @@ int main(void)
 		Delay_ms(500);
 		if(USART_RX_STA & 0x8000)
 		{
-//			printf("%s\r\n",USART_RX_BUF);
 			USART_RXbuffer_init();
 			printf("**********************************\r\n");
-			printf("****jump to IAP test!****\r\n");
+			printf("****jump to boot test!****\r\n");
 			printf("**********************************\r\n");
 			if (((*(__IO uint32_t*)IAP_ADDRESS) & 0x2FFE0000 ) == 0x20000000)
 			{
-				printf("test\r\n");
-			  /* Jump to user application */
-			  JumpAddress = *(__IO uint32_t*) (IAP_ADDRESS + 4);
-			  JumpToIAP = (pFunction) JumpAddress;
-			  /* Initialize user application's Stack Pointer */
+			  JumpAddress = *(__IO uint32_t*) (IAP_ADDRESS + 4); //IAP地址
+			  JumpToIAP = (pFunction) JumpAddress;				 //实例化跳转函数
+			  /* Initialize IAP's Stack Pointer */
 			  __set_MSP(*(__IO uint32_t*) IAP_ADDRESS);
 			  JumpToIAP();
 			}

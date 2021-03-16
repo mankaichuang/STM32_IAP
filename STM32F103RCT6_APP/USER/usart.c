@@ -88,9 +88,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 					USART_RX_BUF[USART_RX_STA&0X3FFF] = aRxBuffer[0];  //将新数据也储存起来
 					USART_RX_STA++ ;                           //数据计数器加1
 				}
-				else 
+				else
+				{
 					USART_RX_STA|=0x8000;	//接收完成了
 					printf("This app usart it!\r\n");
+				}
 			}
 			else //还没收到0X0D
 			{	
