@@ -12,12 +12,7 @@
 #include "delay.h"
 #include "led.h"
 #include "usart.h"
-
-typedef  void (*pFunction)(void);
-
-#define APPLICATION_ADDRESS     (uint32_t)0x08010000
-pFunction JumpToApplication;
-uint32_t JumpAddress;
+#include "updata.h"
 
 void SystemClock_Config(void);
 
@@ -34,23 +29,26 @@ int main(void)
 	printf("**********************************\r\n");
 	while(1)
 	{
-		LED_On(LED_CTL_G_Pin);
-		Delay_ms(500);
-		LED_Off(LED_CTL_G_Pin);
-		Delay_ms(500);
-		if(USART_RX_STA & 0x8000)
+		
+		sendRequest(REQUEST_UPDATA);	//发送升级请求
+		Delay_ms(3000);
+		//如果收到升级请求
+		if((USART_RX_STA & 0x8000) && (USART_RX_BUF[0] == UPDATA_REDAY))
 		{
+			//获取发送包数量
+			updataPackage = USART_RX_BUF[1];
 			USART_RXbuffer_init();
-			printf("**********************************\r\n");
-			printf("****jump to APP test!****\r\n");
-			printf("**********************************\r\n");
+			updataFlash();
+		}
+		else	//跳转到APP
+		{
 			if (((*(__IO uint32_t*)APPLICATION_ADDRESS) & 0x2FFE0000 ) == 0x20000000)
 			{
 			  JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4); //APP address
 			  JumpToApplication = (pFunction) JumpAddress;
 			  /* Initialize user application's Stack Pointer */
 			  __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
-			  JumpToApplication();
+			  JumpToApplication();	
 			}
 		}
 	}

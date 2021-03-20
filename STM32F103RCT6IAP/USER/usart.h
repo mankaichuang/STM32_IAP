@@ -13,13 +13,13 @@
 
 #include "sys.h"
 
-#define USART_REC_LEN    255
+#define USART_REC_LEN    4096
 
 extern UART_HandleTypeDef huart2;
 
 extern uint8_t  USART_RX_BUF[USART_REC_LEN];
-extern uint8_t  USART_TX_BUF[USART_REC_LEN];
 extern uint16_t USART_RX_STA; 
+extern uint32_t USART_RX_COUNT;
 
 extern uint8_t aRxBuffer[1];//HAL库使用的串口接收缓冲
 
