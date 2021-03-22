@@ -1,11 +1,12 @@
-/*
- * oled.c
- *
- *  Created on: 2017-5-19
- *      Author: intelligent
- */
+/**
+  ******************************************************************************
+  * @file           : oled.c
+  * @brief          : STM32F103RCT6_IAP
+  * @Created on		: 2021-03-20
+  * Author			: mankaichuang
+  ******************************************************************************
+**/
 
-#include "stm32f1xx_hal.h"
 #include "oled.h" 
 #include "delay.h"
 #include "oledfont.h"
@@ -23,7 +24,7 @@
 uint8_t OLED_GRAM[128][8];
 
 #if OLED_MODE==1
-//向SSD1106写入一个字节。
+//向SSD1306写入一个字节。
 //dat:要写入的数据/命令
 //cmd:数据/命令标志 0,表示命令;1,表示数据;
 void OLED_WR_Byte(uint8_t dat,uint8_t cmd)
@@ -40,9 +41,11 @@ void OLED_WR_Byte(uint8_t dat,uint8_t cmd)
 	OLED_DC_Set();	 
 } 	    	    
 #else
-//向SSD1106写入一个字节。
+//==================================================================
+//向SSD1306写入一个字节。
 //dat:要写入的数据/命令
 //cmd:数据/命令标志 0,表示命令;1,表示数据;
+//==================================================================
 void OLED_WR_Byte(uint8_t dat,uint8_t cmd)
 {	
 	uint8_t i;			  
@@ -65,6 +68,11 @@ void OLED_WR_Byte(uint8_t dat,uint8_t cmd)
 	OLED_DC_Set();   	  
 }
 
+//==================================================================
+//向SSD1306写入一个字节,反向显示
+//dat:要写入的数据/命令
+//cmd:数据/命令标志 0,表示命令;1,表示数据;
+//==================================================================
 void OLED_WR_Byte2(uint8_t dat,uint8_t cmd)
 {	
 	uint8_t i;			  
@@ -89,6 +97,11 @@ void OLED_WR_Byte2(uint8_t dat,uint8_t cmd)
 } 
 #endif
 
+//==================================================================
+//设置光标位置
+//x:x坐标
+//y:y坐标
+//==================================================================
 void OLED_Set_Pos(unsigned char x, unsigned char y) 
 { 
 	OLED_WR_Byte(0xb0+y,OLED_CMD);
@@ -96,7 +109,9 @@ void OLED_Set_Pos(unsigned char x, unsigned char y)
 	OLED_WR_Byte((x&0x0f)|0x01,OLED_CMD); 
 }
 
-//开启OLED显示    
+//==================================================================
+//开启OLED显示  
+//==================================================================  
 void OLED_Display_On(void)
 {
 	OLED_WR_Byte(0X8D,OLED_CMD);  //SET DCDC命令
@@ -104,7 +119,9 @@ void OLED_Display_On(void)
 	OLED_WR_Byte(0XAF,OLED_CMD);  //DISPLAY ON
 }
 
-//关闭OLED显示     
+//==================================================================
+//关闭OLED显示  
+//==================================================================    
 void OLED_Display_Off(void)
 {
 	OLED_WR_Byte(0X8D,OLED_CMD);  //SET DCDC命令
@@ -112,7 +129,9 @@ void OLED_Display_Off(void)
 	OLED_WR_Byte(0XAE,OLED_CMD);  //DISPLAY OFF
 }
 
-//清屏函数,清完屏,整个屏幕是黑色的!和没点亮一样!!!	  
+//==================================================================
+//清屏函数,清完屏,整个屏幕是黑色的!和没点亮一样!!!	
+//==================================================================	  
 void OLED_Clear(void)  
 {  
 	uint8_t i,n;		    
@@ -125,7 +144,9 @@ void OLED_Clear(void)
 	} //更新显示
 }
 
-//更新显存到LCD		 
+//==================================================================
+//更新显存到LCD	
+//==================================================================	 
 void OLED_Refresh_Gram(void)
 {
 	uint8_t i,n;		    
@@ -138,10 +159,12 @@ void OLED_Refresh_Gram(void)
 	}   
 }
 
+//==================================================================
 //画点 
 //x:0~127
 //y:0~63
-//t:1 填充 0,清空				   
+//t:1 填充 0,清空	
+//==================================================================			   
 void OLED_DrawPoint(uint8_t x,uint8_t y,uint8_t t)   
 {
 	uint8_t pos,bx,temp=0;
@@ -159,9 +182,12 @@ void OLED_DrawPoint(uint8_t x,uint8_t y,uint8_t t)
 	else OLED_GRAM[x][pos]&=~temp;	    
 }
 
+//==================================================================
+//填充
 //x1,y1,x2,y2 填充区域的对角坐标
 //确保x1<=x2;y1<=y2 0<=x1<=127 0<=y1<=63	 	 
 //dot:0,清空;1,填充	  
+//==================================================================
 void OLED_Fill(uint8_t x1,uint8_t y1,uint8_t x2,uint8_t y2,uint8_t dot)
 {  
 	uint8_t x,y;  
@@ -172,11 +198,22 @@ void OLED_Fill(uint8_t x1,uint8_t y1,uint8_t x2,uint8_t y2,uint8_t dot)
 	OLED_Refresh_Gram();//更新显示
 }
 
+//==================================================================
+//清空一行
+//Line：1、2、3、4
+//==================================================================
+void OLED_ClearLine(uint8_t line)
+{
+	OLED_ShowString(0,line*2-2,(uint8_t *)"                ",16,1);
+}
+
+//==================================================================
 //在指定位置显示一个字符,包括部分字符
 //x:0~127
 //y:0~63
 //mode:0,反白显示;1,正常显示				 
 //size:选择字体 16/12 
+//==================================================================
 void OLED_ShowChar(uint8_t x,uint8_t y,uint8_t chr,uint8_t char_size,uint8_t mode)
 {      	
 	unsigned char c=0,i=0;	
@@ -221,20 +258,24 @@ void OLED_ShowChar(uint8_t x,uint8_t y,uint8_t chr,uint8_t char_size,uint8_t mod
 		}
 }
 
+//==================================================================
 //m^n函数
+//==================================================================
 uint32_t oled_pow(uint8_t m,uint8_t n)
 {
 	uint32_t result=1;	 
 	while(n--)result*=m;    
 	return result;
-}				  
+}	
+
+//==================================================================
 //显示数字
 //x,y :起点坐标	 
 //len :数字的位数
 //size:字体大小16/8
 //mode:模式	0,反显;1,正常显示
 //num:数值(0~4294967295);
-
+//==================================================================
 void OLED_ShowNum(uint8_t x,uint8_t y,uint32_t num,uint8_t len,uint8_t size,uint8_t mode)
 {         	
 	uint8_t t,temp;
@@ -253,12 +294,15 @@ void OLED_ShowNum(uint8_t x,uint8_t y,uint32_t num,uint8_t len,uint8_t size,uint
 		}
 	 	OLED_ShowChar(x+(size/2)*t,y,temp+'0',size,mode); 
 	}
-} 
+}
+
+//==================================================================
 //显示一个字符串
 //x,y起始坐标
 //chr字符串
 //字体大小16/8
 //mode 0，反显；1，正常显示
+//==================================================================
 void OLED_ShowString(uint8_t x,uint8_t y,uint8_t *chr,uint8_t char_size,uint8_t mode)
 {
 	unsigned char j=0;
@@ -270,11 +314,12 @@ void OLED_ShowString(uint8_t x,uint8_t y,uint8_t *chr,uint8_t char_size,uint8_t 
 	}
 }
 
-//显示汉字
+//==================================================================
+//显示汉字16*16
 //x,y起始坐标
 //Hz_No汉字的序号
-//字体大小16/8
 //mode 0，反显；1，正常显示
+//==================================================================
 void OLED_ShowCHinese(uint8_t x,uint8_t y,uint8_t Hz_No,uint8_t mode)
 {      			    
 	uint8_t t,adder=0;
@@ -308,7 +353,9 @@ void OLED_ShowCHinese(uint8_t x,uint8_t y,uint8_t Hz_No,uint8_t mode)
       }
 	}
 }
-/***********功能描述：显示显示BMP图片128×64起始点坐标(x,y),x的范围0～127，y为页的范围0～7*****************/
+//==================================================================
+//显示BMP图片128×64起始点坐标(x,y),x的范围0～127，y为页的范围0～7
+//==================================================================
 void OLED_DrawBMP(unsigned char x0, unsigned char y0,unsigned char x1, unsigned char y1,unsigned char BMP[])
 { 	
  unsigned int j=0;
@@ -327,25 +374,21 @@ void OLED_DrawBMP(unsigned char x0, unsigned char y0,unsigned char x1, unsigned 
 } 
 
 
-//初始化SSD1306					    
+//==================================================================
+//初始化SSD1306		
+//==================================================================				    
 void OLED_Init(void)
 { 	
- 
- 	 
 	GPIO_InitTypeDef GPIO_InitStruct;
- 	
-
-	__HAL_RCC_GPIOB_CLK_ENABLE();
-	
+ 	__HAL_RCC_GPIOB_CLK_ENABLE();
 	HAL_GPIO_WritePin(GPIOB,OLED_D0_Pin|OLED_D1_Pin|OLED_RES_Pin|OLED_CD_Pin|OLED_CS_Pin, GPIO_PIN_SET);
 	
-  GPIO_InitStruct.Pin = OLED_D0_Pin|OLED_D1_Pin |OLED_RES_Pin|OLED_CD_Pin|OLED_CS_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+	GPIO_InitStruct.Pin = OLED_D0_Pin|OLED_D1_Pin |OLED_RES_Pin|OLED_CD_Pin|OLED_CS_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-
-  OLED_RST_Set();
+	OLED_RST_Set();
 	Delay_ms(100);
 	OLED_RST_Clr();
 	Delay_ms(200);

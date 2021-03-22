@@ -13,10 +13,10 @@ extern pFunction JumpToApplication;
 extern uint32_t JumpAddress;
 
 extern uint8_t updataPackage;
-
+extern uint8_t updatabuf[2048];
 void sendRequest(uint8_t cmd);
 void updataFlash(void);
 
-void ASC2BCD(uint8_t *ucASCBuf,uint8_t *ucBCDBuf,uint16_t Len);
+void ASC2BCD(uint8_t *ucASCBuf,uint8_t *ucBCDBuf,uint32_t Len);
 		 				    
 #endif

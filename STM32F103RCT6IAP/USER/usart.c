@@ -60,8 +60,9 @@ void USART2_Init(uint32_t bound)
 
 void USART_RXbuffer_init(void)
 {
-	USART_RX_STA=0;
-	memset(USART_RX_BUF,0x00,USART_REC_LEN);
+	USART_RX_STA = 0;
+	USART_RX_COUNT = 0;
+//	memset(USART_RX_BUF,0x00,USART_REC_LEN);
 }
 
 //==================================================================
@@ -104,7 +105,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 				{
 					USART_RX_BUF[USART_RX_COUNT]=aRxBuffer[0] ;
 					USART_RX_COUNT++;
-					if((USART_RX_COUNT)>(USART_REC_LEN-1))
+					if(USART_RX_COUNT > USART_REC_LEN)
 					{
 						USART_RX_STA = 0;
 						USART_RX_COUNT=0;//接收数据错误,重新开始接收	

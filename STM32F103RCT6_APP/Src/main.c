@@ -12,10 +12,12 @@
 #include "delay.h"
 #include "led.h"
 #include "usart.h"
+#include "oled.h"
 
 typedef  void (*pFunction)(void);
 
 #define IAP_ADDRESS     (uint32_t)0x08000000
+#define UPDATA_CMD		0xF0
 pFunction JumpToIAP;
 uint32_t JumpAddress;
 
@@ -28,29 +30,28 @@ int main(void)
 	Delay_init(72);
 	LED_Init();
 	USART2_Init(115200);
+	OLED_Init();
+	OLED_ShowString(20,2,(uint8_t *)"STM32_APP2",16,1);
 	
-	printf("**********************************\r\n");
-	printf("****this is APP test!****\r\n");
-	printf("**********************************\r\n");
 	while(1)
 	{
-		LED_On(LED_CTL_W_Pin);
-		Delay_ms(500);
-		LED_Off(LED_CTL_W_Pin);
-		Delay_ms(500);
 		if(USART_RX_STA & 0x8000)
 		{
-			USART_RXbuffer_init();
-			printf("**********************************\r\n");
-			printf("****jump to boot test!****\r\n");
-			printf("**********************************\r\n");
-			if (((*(__IO uint32_t*)IAP_ADDRESS) & 0x2FFE0000 ) == 0x20000000)
+			if(USART_RX_BUF[0] == UPDATA_CMD)
 			{
-			  JumpAddress = *(__IO uint32_t*) (IAP_ADDRESS + 4); //IAP地址
-			  JumpToIAP = (pFunction) JumpAddress;				 //实例化跳转函数
-			  /* Initialize IAP's Stack Pointer */
-			  __set_MSP(*(__IO uint32_t*) IAP_ADDRESS);
-			  JumpToIAP();
+				USART_RXbuffer_init();
+				if (((*(__IO uint32_t*)IAP_ADDRESS) & 0x2FFE0000 ) == 0x20000000)
+				{
+				JumpAddress = *(__IO uint32_t*) (IAP_ADDRESS + 4); //IAP地址
+				JumpToIAP = (pFunction) JumpAddress;				 //实例化跳转函数
+				/* Initialize IAP's Stack Pointer */
+				__set_MSP(*(__IO uint32_t*) IAP_ADDRESS);
+				JumpToIAP();
+				}
+			}
+			else
+			{
+				USART_RXbuffer_init();
 			}
 		}
 	}

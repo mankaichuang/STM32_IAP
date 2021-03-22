@@ -74,7 +74,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 //-----------------------------------------------------------------//
 //receive flag 0x0d 0x0a
 //-----------------------------------------------------------------//
-	if(huart->Instance==USART2)//如果是串口1
+	if(huart->Instance==USART2)//如果是串口2
 	{
 		if((USART_RX_STA&0x8000)==0)//接收未完成
 		{
@@ -91,7 +91,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 				else
 				{
 					USART_RX_STA|=0x8000;	//接收完成了
-					printf("This app usart it!\r\n");
 				}
 			}
 			else //还没收到0X0D

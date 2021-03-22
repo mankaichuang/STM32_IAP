@@ -3,7 +3,8 @@
 #define __OLED_H	
 
 #include "stdint.h"
-    	
+#include "sys.h"  
+
 //OLED模式设置
 //0:4线串行模式
 //1:并行8080模式
@@ -12,16 +13,17 @@
 #define Max_Row		64
     
 
-
-#define OLED_D0_Pin GPIO_PIN_12
-
-#define OLED_D1_Pin GPIO_PIN_13
-
-#define OLED_RES_Pin GPIO_PIN_14
-
-#define OLED_CS_Pin GPIO_PIN_15
-
-#define OLED_CD_Pin GPIO_PIN_8
+//OLED接口定义
+#define OLED_D0_Pin GPIO_PIN_3
+#define OLED_D0_GPIO_Port GPIOB
+#define OLED_D1_Pin GPIO_PIN_4
+#define OLED_D1_GPIO_Port GPIOB
+#define OLED_RES_Pin GPIO_PIN_5
+#define OLED_RES_GPIO_Port GPIOB
+#define OLED_CD_Pin GPIO_PIN_6
+#define OLED_CD_GPIO_Port GPIOB
+#define OLED_CS_Pin GPIO_PIN_7
+#define OLED_CS_GPIO_Port GPIOB
 
 
 //-----------------OLED端口定义----------------  					   
@@ -53,6 +55,7 @@ void OLED_Display_On(void);
 void OLED_Display_Off(void);	   							   		    
 void OLED_Init(void);
 void OLED_Clear(void);
+void OLED_ClearLine(uint8_t line);
 void OLED_Refresh_Gram(void);
 void OLED_DrawPoint(uint8_t x,uint8_t y,uint8_t t);
 void OLED_Fill(uint8_t x1,uint8_t y1,uint8_t x2,uint8_t y2,uint8_t dot);

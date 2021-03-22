@@ -13,6 +13,7 @@
 #include "led.h"
 #include "usart.h"
 #include "updata.h"
+#include "oled.h"
 
 void SystemClock_Config(void);
 
@@ -23,13 +24,11 @@ int main(void)
 	Delay_init(72);
 	LED_Init();
 	USART2_Init(115200);
+	OLED_Init();
+	OLED_ShowString(20,2,(uint8_t *)"STM32_BOOT",16,1);
 	
-	printf("**********************************\r\n");
-	printf("****this is boot test!****\r\n");
-	printf("**********************************\r\n");
 	while(1)
-	{
-		
+	{		
 		sendRequest(REQUEST_UPDATA);	//发送升级请求
 		Delay_ms(3000);
 		//如果收到升级请求

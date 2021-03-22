@@ -617,6 +617,11 @@
               <FileType>1</FileType>
               <FilePath>..\USER\flash.c</FilePath>
             </File>
+            <File>
+              <FileName>oled.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\oled.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
