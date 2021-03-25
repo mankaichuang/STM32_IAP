@@ -2,7 +2,6 @@
 #ifndef __OLED_H
 #define __OLED_H	
 
-#include "stdint.h"
 #include "sys.h"  
 
 //OLEDÄ£Ê½ÉèÖÃ

@@ -53,11 +53,6 @@ void updataFlash(void)
 			progressBar_cnt++;
 			ASC2BCD(USART_RX_BUF,updatabuf,USART_RX_COUNT);
 			buf = updatabuf;
-//			for(i = 0; i < (USART_RX_COUNT/2); i++)
-//			{
-//				printf("%c",updatabuf[i]);
-//			}
-//			printf("\r\n");
 			for(i = 0; i<USART_RX_COUNT/2; i+=2)
 			{
 				tempbuf = (uint16_t)buf[1]<<8;
@@ -68,13 +63,16 @@ void updataFlash(void)
 			}
 			FLASH_Write(faddr,u16updatabuf,USART_RX_COUNT/4);
 			faddr += 2048;
+			if(updataPackage == 0)
+			{
+				OLED_Fill(0,32,127,47,1);
+			}
+			else
+			{
+				OLED_Fill(0,32,progressBar*progressBar_cnt,47,1);
+			}
+			OLED_ShowString(20,2,(uint8_t *)"DOWNLOAD...",16,1);
 			sendRequest(UPDATA_REDAY);
-//			if(updataPackage == 0)
-//			{
-//				OLED_Fill(0,32,127,47,1);
-//			}
-//			else
-//				OLED_Fill(0,32,progressBar*progressBar_cnt,47,1);
 			USART_RXbuffer_init();
 		}
 	}

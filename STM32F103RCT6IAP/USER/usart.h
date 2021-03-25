@@ -13,11 +13,11 @@
 
 #include "sys.h"
 
-#define USART_REC_LEN    4096
+//#define USART_REC_LEN    4096
 
 extern UART_HandleTypeDef huart2;
 
-extern uint8_t  USART_RX_BUF[USART_REC_LEN];
+extern uint8_t  USART_RX_BUF[4096];
 extern uint16_t USART_RX_STA; 
 extern uint32_t USART_RX_COUNT;
 

@@ -1,7 +1,6 @@
 #ifndef __FLASH_H
 #define __FLASH_H
 
-#include "stdint.h"
 #include "sys.h"
 
 //FLASHÆðÊ¼µØÖ·

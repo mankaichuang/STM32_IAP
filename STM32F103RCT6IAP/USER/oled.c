@@ -190,7 +190,7 @@ void OLED_DrawPoint(uint8_t x,uint8_t y,uint8_t t)
 //==================================================================
 void OLED_Fill(uint8_t x1,uint8_t y1,uint8_t x2,uint8_t y2,uint8_t dot)
 {  
-	uint8_t x,y;  
+	uint8_t x,y;
 	for(x=x1;x<=x2;x++)
 	{
 		for(y=y1;y<=y2;y++)OLED_DrawPoint(x,y,dot);

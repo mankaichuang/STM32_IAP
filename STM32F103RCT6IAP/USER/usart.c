@@ -14,7 +14,7 @@
 
 UART_HandleTypeDef huart2;
 
-uint8_t USART_RX_BUF[USART_REC_LEN];     //接收缓冲,最大USART_REC_LEN个字节.
+uint8_t USART_RX_BUF[4096];     //接收缓冲,最大4096个字节.
 
 //=============================================================================
 //接收状态  uart1
@@ -105,7 +105,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 				{
 					USART_RX_BUF[USART_RX_COUNT]=aRxBuffer[0] ;
 					USART_RX_COUNT++;
-					if(USART_RX_COUNT > USART_REC_LEN)
+					if(USART_RX_COUNT > 4096)
 					{
 						USART_RX_STA = 0;
 						USART_RX_COUNT=0;//接收数据错误,重新开始接收	
